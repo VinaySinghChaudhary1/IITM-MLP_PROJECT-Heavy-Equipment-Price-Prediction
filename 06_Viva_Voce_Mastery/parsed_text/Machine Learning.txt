@@ -1,0 +1,1533 @@
+Harsh Choudhary 
+ 
+
+Harsh Choudhary 
+Machine Learning Questions & Answers 
+ 
+1. What is supervised learning? 
+Answer: 
+Supervised learning is a type of machine learning where the model learns from 
+labelled data. Each training example consists of input pairs and expected 
+outputs (labels). The algorithms aim to map inputs to outputs. 
+Example: Classification (e.g., spam detection), Regression (e.g., house price 
+prediction). 
+Code Example: 
+python 
+from sklearn.datasets import load_iris 
+from sklearn.model_selection import train_test_split 
+from sklearn.tree import DecisionTreeClassifier 
+ 
+iris = load_iris() 
+X, y = iris.data, iris.target 
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2) 
+clf = DecisionTreeClassifier() 
+clf.fit(X_train, y_train) 
+print(clf.score(X_test, y_test)) 
+ 
+ 
+2. What is unsupervised learning? 
+Answer: 
+Unsupervised learning deals with unlabeled data. The algorithm tries to find 
+Harsh Choudhary 
+hidden patterns or groupings in data, commonly used for clustering or 
+dimensionality reduction. 
+Code Example: 
+python 
+from sklearn.datasets import load_iris 
+from sklearn.cluster import KMeans 
+ 
+iris = load_iris() 
+X = iris.data 
+kmeans = KMeans(n_clusters=3) 
+kmeans.fit(X) 
+print(kmeans.labels_) 
+ 
+3. What is overfitting, and how can you prevent it? 
+Answer: 
+Overfitting happens when a model learns noise and details from the training 
+data to the extent that it negatively impacts performance on new data. 
+Prevention: Regularization, using more data, feature selection, cross-validation, 
+early stopping (for neural networks), simplification of the model. 
+ 
+4. Explain the difference between classification and regression. 
+Feature Classification Regression 
+Output type Discrete categories Continuous values 
+Harsh Choudhary 
+Feature Classification Regression 
+Example 
+Spam vs. ham email 
+detection 
+House price 
+prediction 
+Algorithm 
+examples Logistic Regression, SVM 
+Linear Regression, 
+SVR 
+ 
+5. How does k-Nearest Neighbors (kNN) work? 
+Answer: 
+kNN is a non-parametric algorithm that classifies a point by looking at the ‘k’ 
+closest labeled data points in the feature space. For regression, it averages the 
+values of k nearest neighbors. 
+Code Example: 
+python 
+from sklearn.neighbors import KNeighborsClassifier 
+knn = KNeighborsClassifier(n_neighbors=3) 
+knn.fit(X_train, y_train) 
+predictions = knn.predict(X_test) 
+ 
+6. What is feature scaling, and why is it important? 
+Answer: 
+Feature scaling standardizes the range of independent variables, especially 
+important for algorithms like kNN and SVM. Common methods: Standardization 
+(z-score), Min-Max scaling. 
+Code Example: 
+python 
+Harsh Choudhary 
+from sklearn.preprocessing import StandardScaler 
+scaler = StandardScaler() 
+X_scaled = scaler.fit_transform(X) 
+ 
+7. How do you evaluate a classification model? 
+Answer: 
+Common metrics: Accuracy, Precision, Recall, F1-score, ROC-AUC. 
+Confusion Matrix is also used for detailed evaluation. 
+Code Example: 
+python 
+from sklearn.metrics import classification_report, confusion_matrix 
+y_pred = clf.predict(X_test) 
+print(classification_report(y_test, y_pred)) 
+print(confusion_matrix(y_test, y_pred)) 
+ 
+8. Explain cross-validation. 
+Answer: 
+Cross-validation splits data into multiple folds; each fold is used as a validation 
+set while the others are used for training. Most common is k-fold cross-
+validation. 
+Code Example: 
+python 
+from sklearn.model_selection import cross_val_score 
+scores = cross_val_score(clf, X, y, cv=5) 
+print(scores) 
+ 
+Harsh Choudhary 
+9. What is hyperparameter tuning? 
+Answer: 
+Hyperparameter tuning involves finding the best combination of model settings 
+(like tree depth, number of neighbors) to maximize performance. 
+Code Example: 
+python 
+from sklearn.model_selection import GridSearchCV 
+params = {'max_depth': [3, 5, 7]} 
+grid = GridSearchCV(DecisionTreeClassifier(), params, cv=3) 
+grid.fit(X, y) 
+print(grid.best_params_) 
+ 
+10. What is a confusion matrix? 
+Answer: 
+A confusion matrix summarizes the performance of a classification model by 
+showing true positive, false positive, true negative, and false negative counts. 
+Code Example: 
+python 
+from sklearn.metrics import confusion_matrix 
+cm = confusion_matrix(y_test, y_pred) 
+print(cm) 
+11. What is regularization in machine learning? 
+Answer: 
+Regularization is a technique to reduce model complexity and prevent 
+overfitting by adding a penalty on model parameters. Common types are L1 
+(Lasso) and L2 (Ridge) regularization. 
+Harsh Choudhary 
+Code Example (Ridge Regression): 
+python 
+from sklearn.linear_model import Ridge 
+ridge = Ridge(alpha=1.0) 
+ridge.fit(X_train, y_train) 
+print(ridge.score(X_test, y_test)) 
+ 
+12. What is bias-variance tradeoff? 
+Answer: 
+The bias-variance tradeoff is a balance between a model that is too simple (high 
+bias, underfits) and one that is too complex (high variance, overfits). The goal is 
+to find the optimal model with both low bias and variance. 
+ 
+13. Explain One-Hot Encoding. 
+Answer: 
+One-hot encoding converts categorical variables into binary vectors. Each 
+category becomes a new column with values 0 or 1. 
+Code Example: 
+python 
+import pandas as pd 
+df = pd.DataFrame({'color': ['red', 'blue', 'green']}) 
+one_hot = pd.get_dummies(df['color']) 
+print(one_hot) 
+ 
+14. What is Principal Component Analysis (PCA)? 
+Harsh Choudhary 
+Answer: 
+PCA is a dimensionality reduction technique that transforms data into fewer 
+uncorrelated variables called principal components, preserving as much variance 
+as possible. 
+Code Example: 
+python 
+from sklearn.decomposition import PCA 
+pca = PCA(n_components=2) 
+X_reduced = pca.fit_transform(X) 
+ 
+15. What is feature selection? 
+Answer: 
+Feature selection is the process of selecting the most important variables for 
+model training to prevent overfitting, reduce computation, and improve 
+interpretability. 
+Code Example: 
+python 
+from sklearn.feature_selection import SelectKBest, f_classif 
+selector = SelectKBest(score_func=f_classif, k=2) 
+X_new = selector.fit_transform(X, y) 
+ 
+16. What is the difference between bagging and boosting? 
+Bagging Boosting 
+Trains models in parallel Trains models sequentially 
+Harsh Choudhary 
+Bagging Boosting 
+Aims to reduce variance Aims to reduce bias 
+Example: Random Forest Example: AdaBoost, XGBoost 
+ 
+17. How does Random Forest work? 
+Answer: 
+Random Forest is an ensemble method that constructs multiple decision trees 
+on bootstrapped samples and averages their predictions to improve accuracy 
+and reduce overfitting. 
+Code Example: 
+python 
+from sklearn.ensemble import RandomForestClassifier 
+rf = RandomForestClassifier(n_estimators=100) 
+rf.fit(X_train, y_train) 
+print(rf.score(X_test, y_test)) 
+ 
+18. What is Support Vector Machine (SVM)? 
+Answer: 
+SVM is a supervised learning algorithm for classification and regression, which 
+finds the optimal hyperplane that maximizes the margin between different 
+classes. 
+Code Example: 
+python 
+from sklearn.svm import SVC 
+Harsh Choudhary 
+svm = SVC(kernel='linear') 
+svm.fit(X_train, y_train) 
+ 
+19. What is the purpose of the ROC Curve? 
+Answer: 
+The ROC Curve (Receiver Operating Characteristic) is a graphical plot showing 
+the performance of a binary classifier as the discrimination threshold is varied. 
+Code Example: 
+python 
+from sklearn.metrics import roc_curve, auc 
+fpr, tpr, thresholds = roc_curve(y_test, y_pred_prob) 
+print(auc(fpr, tpr)) 
+ 
+20. What is precision and recall? 
+Answer: 
+• Precision: Ratio of true positives to all predicted positives. 
+• Recall: Ratio of true positives to all actual positives. 
+ 
+21. What are neural networks? 
+Answer: 
+Neural networks are computational models inspired by the human brain, 
+consisting of interconnected layers of nodes (neurons). Used for both supervised 
+and unsupervised learning, especially powerful for complex tasks. 
+ 
+22. What is a perceptron? 
+Harsh Choudhary 
+Answer: 
+A perceptron is the simplest neural network, consisting of one layer with only 
+one neuron, used for binary linear classification. 
+Code Example: 
+python 
+from sklearn.linear_model import Perceptron 
+p = Perceptron() 
+p.fit(X_train, y_train) 
+ 
+23. What is dropout in neural networks? 
+Answer: 
+Dropout is a regularization technique for neural networks where a fraction of 
+neurons are randomly set to zero during training, helping prevent overfitting. 
+Code Example (Keras): 
+python 
+from keras.layers import Dropout 
+model.add(Dropout(0.5)) 
+ 
+24. Explain batch gradient descent. 
+Answer: 
+Batch gradient descent computes the gradient of the cost function using the 
+entire training dataset and updates parameters in each iteration. 
+ 
+25. What is data normalization? 
+Answer: 
+Normalization transforms features to have a 0 mean and unit variance, or to fit 
+within a fixed range (e.g., 0 to 1). 
+Harsh Choudhary 
+Code Example: 
+python 
+from sklearn.preprocessing import MinMaxScaler 
+scaler = MinMaxScaler() 
+X_norm = scaler.fit_transform(X) 
+ 
+26. How do you handle missing values in data? 
+Answer: 
+Common methods: removing rows, replacing (imputing) with 
+mean/median/mode, forward/backward fill. 
+Code Example: 
+python 
+import pandas as pd 
+df.fillna(df.mean(), inplace=True) 
+ 
+27. What is cross entropy loss? 
+Answer: 
+Cross entropy loss measures the performance of a classification model whose 
+output is a probability value between 0 and 1. It increases as the predicted 
+probability diverges from the actual label. 
+ 
+28. What does the learning rate control? 
+Answer: 
+The learning rate controls the step size during gradient descent. Too high may 
+cause divergence; too low, slow convergence. 
+ 
+Harsh Choudhary 
+29. What is early stopping? 
+Answer: 
+Early stopping ends the training of a model when performance on a validation 
+set stops improving, preventing overfitting. 
+ 
+30. What is model deployment? 
+Answer: 
+Model deployment is the process of integrating a trained model into a 
+production environment where it can make real-time predictions on new data. 
+31. What is ensemble learning? 
+Answer: 
+Ensemble learning combines multiple models (often weak learners) to improve 
+overall model performance, accuracy, and robustness. 
+ 
+32. Name common ensemble algorithms. 
+Answer: 
+Random Forest, Bagging, Boosting (AdaBoost, Gradient Boosting, XGBoost), 
+Stacking, Voting Classifier. 
+ 
+33. What is stacking in ensembles? 
+Answer: 
+Stacking combines predictions from several base learners (with different 
+strengths) using a meta-learner to give the final prediction. 
+ 
+34. What is bagging and give an example? 
+Answer: 
+Bagging fits multiple models on random data subsets with replacement and 
+averages results. Example: Random Forest. 
+Harsh Choudhary 
+ 
+35. What is boosting and give an example? 
+Answer: 
+Boosting trains models sequentially, each focusing on correcting previous model 
+errors. Example: AdaBoost, Gradient Boosting. 
+ 
+36. Explain Gradient Boosting. 
+Answer: 
+Gradient Boosting builds models sequentially, each new one trained on the 
+residuals (errors) of the previous model, which improves prediction accuracy. 
+Code Example: 
+python 
+from sklearn.ensemble import GradientBoostingClassifier 
+gb = GradientBoostingClassifier() 
+gb.fit(X_train, y_train) 
+ 
+37. What are decision trees and how do they work? 
+Answer: 
+Decision trees classify data by splitting nodes on feature values, choosing splits 
+based on criteria like Gini impurity or entropy, until pure or max depth is 
+reached. 
+ 
+38. What is Gini impurity? 
+Answer: 
+Gini impurity measures the probability of misclassifying a randomly chosen 
+element if assigned randomly according to class distribution in a node. 
+ 
+Harsh Choudhary 
+39. What is entropy in decision trees? 
+Answer: 
+Entropy measures the impurity or disorder in a node, used for determining 
+optimal splits (as in ID3 algorithm). 
+ 
+40. What is pruning in decision trees? 
+Answer: 
+Pruning removes parts of a tree that do not provide additional predictive power 
+to avoid overfitting. 
+ 
+41. What is feature engineering? 
+Answer: 
+Feature engineering is creating new features or modifying existing ones from 
+raw data to improve model performance. 
+ 
+42. Give examples of feature engineering. 
+Answer: 
+Scaling, log transforms, encoding categoricals, extracting date/time features, 
+interactions (products/sums), polynomial features. 
+ 
+43. What is label encoding? 
+Answer: 
+Label encoding converts categorical labels into numeric codes for model use. 
+Code Example: 
+python 
+from sklearn.preprocessing import LabelEncoder 
+le = LabelEncoder() 
+Harsh Choudhary 
+y_encoded = le.fit_transform(y) 
+ 
+44. Explain the difference between parametric and non-parametric models. 
+Parametric Non-Parametric 
+Assumes data distribution Makes fewer assumptions 
+Fewer parameters More flexible, more parameters 
+Example: Linear regression Example: kNN, Decision Trees 
+ 
+45. What is model interpretability and why is it important? 
+Answer: 
+Model interpretability means how easily a human can understand the reasoning 
+behind model decisions; important for trust, debugging, and compliance. 
+ 
+46. List model interpretability techniques. 
+Answer: 
+Feature importance, SHAP values, LIME, Partial Dependence Plots. 
+ 
+47. What are Confusion Matrix terms: TP , FP , TN, FN? 
+Answer: 
+• TP: True Positive 
+• FP: False Positive 
+• TN: True Negative 
+• FN: False Negative 
+Harsh Choudhary 
+ 
+48. What is the F1 score? 
+Answer: 
+F1 score is the harmonic mean of precision and recall, balancing both in a single 
+metric. 
+ 
+49. What is class imbalance? 
+Answer: 
+Class imbalance occurs when some classes are represented much more 
+frequently than others in a dataset, making model evaluation and prediction 
+harder. 
+ 
+50. How can you handle imbalanced datasets? 
+Answer: 
+• Oversampling minority class (SMOTE) 
+• Undersampling majority class 
+• Use of class weights 
+• Ensemble methods designed for imbalance 
+Code Example (class weights): 
+python 
+from sklearn.linear_model import LogisticRegression 
+lr = LogisticRegression(class_weight='balanced') 
+52. Give an example of transfer learning. 
+Answer: 
+Using a pre-trained VGG16 model (from ImageNet) for feature extraction in a 
+custom image classification problem. 
+Harsh Choudhary 
+Code Example (Keras): 
+python 
+from tensorflow.keras.applications import VGG16 
+model = VGG16(weights='imagenet', include_top=False) 
+ 
+53. What is an autoencoder? 
+Answer: 
+An autoencoder is an unsupervised neural network for learning efficient 
+(compressed) data representations, typically for dimensionality reduction or 
+denoising. 
+ 
+54. What are convolutional neural networks (CNNs)? 
+Answer: 
+CNNs are specialized neural networks for processing data with grid-like topology 
+(e.g., images), using convolutional layers to automatically extract features. 
+ 
+55. What are recurrent neural networks (RNNs)? 
+Answer: 
+RNNs are neural networks designed for sequential data (like time series, text), 
+where outputs depend on previous computations (i.e., they have memory). 
+ 
+56. What is a confusion matrix used for? 
+Answer: 
+It’s used to visually assess performance of a classification model by showing 
+correct and incorrect predictions across classes. 
+ 
+57. What is k-means clustering? 
+Harsh Choudhary 
+Answer: 
+K-means clustering partitions data into ‘k’ clusters by assigning points to nearest 
+centroids iteratively. 
+Code Example: 
+python 
+from sklearn.cluster import KMeans 
+kmeans = KMeans(n_clusters=3) 
+labels = kmeans.fit_predict(X) 
+ 
+58. What is hierarchical clustering? 
+Answer: 
+A clustering method that builds a hierarchy of clusters either by successive 
+merging (agglomerative) or splitting (divisive). 
+ 
+59. What is DBSCAN? 
+Answer: 
+DBSCAN is a density-based clustering algorithm that groups together points 
+closely packed and marks as outliers points lying alone in low-density regions. 
+ 
+60. What is silhouette score? 
+Answer: 
+It evaluates how similar an object is to its own cluster versus other clusters, 
+ranging from -1 to 1 (higher is better). 
+ 
+61. What is model serialization and why is it important? 
+Harsh Choudhary 
+Answer: 
+Serialization (saving) stores a trained model (e.g., using pickle or joblib in 
+Python) so it can be reloaded without retraining. 
+Code Example: 
+python 
+import joblib 
+joblib.dump(model, 'model.pkl')    # Save 
+model = joblib.load('model.pkl')   # Load 
+ 
+62. What is a ROC-AUC score? 
+Answer: 
+Area Under the Receiver Operating Characteristic Curve; measures classifier’s 
+discrimination ability (higher is better). 
+ 
+63. Explain dimensionality reduction. 
+Answer: 
+Reducing the number of input variables in data (e.g., via PCA, t-SNE) to speed up 
+training, aid visualization, and mitigate the curse of dimensionality. 
+ 
+64. What is t-SNE? 
+Answer: 
+t-distributed Stochastic Neighbor Embedding (t-SNE) is an advanced 
+dimensionality reduction technique mainly for high-dimensional data 
+visualization. 
+ 
+65. Name tools for model deployment. 
+Harsh Choudhary 
+Answer: 
+Flask, FastAPI, Docker, TensorFlow Serving, AWS Lambda, Heroku, Google Cloud 
+ML, Azure ML. 
+ 
+66. What is precision-recall tradeoff? 
+Answer: 
+It’s the balance between precision (minimizing false positives) and recall 
+(minimizing false negatives); often a model can’t maximize both. 
+ 
+67. What is anomaly detection? 
+Answer: 
+Anomaly detection aims to identify rare items, events, or observations that 
+differ significantly from the majority of data. 
+ 
+68. What are word embeddings? 
+Answer: 
+Word embeddings are dense vector representations of words (e.g., Word2Vec, 
+GloVe) capturing semantic meaning for use in NLP . 
+ 
+69. What is the bias node in neural networks? 
+Answer: 
+The bias node allows shifting the activation function curve and improves 
+learning, similar to intercept in linear regression. 
+ 
+70. What is the elbow method in clustering? 
+Answer: 
+It’s a technique to determine the optimal number of clusters in k-means by 
+Harsh Choudhary 
+plotting the within-cluster sum of squares and looking for the “elbow” point 
+where the decrease sharply slows. 
+71. What is the softmax function? 
+Answer: 
+Softmax converts a vector of raw scores (logits) into probabilities that sum to 1, 
+commonly used in the output layer of multiclass classification neural networks. 
+Code Example: 
+python 
+import numpy as np 
+def softmax(x): 
+    e_x = np.exp(x - np.max(x)) 
+    return e_x / e_x.sum(axis=0) 
+ 
+72. What is the activation function in a neural network? 
+Answer: 
+An activation function introduces non-linearity, enabling the network to learn 
+complex relationships. Examples: ReLU, sigmoid, tanh. 
+ 
+73. What is the ReLU activation function? 
+Answer: 
+ReLU (Rectified Linear Unit) outputs zero for negative input and the input itself if 
+positive: f(x)=max⁡(0,x)f(x)=max(0,x). 
+ 
+74. What is early stopping in neural networks? 
+Answer: 
+A regularization strategy that halts training when validation performance stops 
+improving, helping to prevent overfitting. 
+Harsh Choudhary 
+ 
+75. What is Xavier/Glorot initialization? 
+Answer: 
+A technique for initializing neural network weights to prevent 
+vanishing/exploding gradients, maintaining variance through layers. 
+ 
+76. What is batch normalization? 
+Answer: 
+A method that normalizes layer inputs for each mini-batch during training, 
+improving speed and stability. 
+Code Example (Keras): 
+python 
+from keras.layers import BatchNormalization 
+model.add(BatchNormalization()) 
+ 
+77. What is Gradient Vanishing/Explosion? 
+Answer: 
+When gradients become extremely small (vanishing) or large (exploding), 
+hindering neural network training, especially in deep networks. 
+ 
+78. What is an epoch? 
+Answer: 
+One epoch means one complete pass through the entire training dataset by the 
+ML model. 
+ 
+79. What is mini-batch gradient descent? 
+Harsh Choudhary 
+Answer: 
+An optimization algorithm that updates model parameters based on a small 
+random subset (mini-batch) of data per iteration—balances speed and 
+convergence. 
+ 
+80. What is the main role of the loss function? 
+Answer: 
+The loss function quantifies how well predictions match actual target values, 
+guiding weight updates during training. 
+ 
+81. What is a generator in deep learning? 
+Answer: 
+A Python function or object that yields data batches on-the-fly, typically used for 
+efficient data feeding during neural network training. 
+ 
+82. What are Generative Adversarial Networks (GANs)? 
+Answer: 
+GANs consist of a generator and discriminator network competing against each 
+other—the generator creates fake data, the discriminator distinguishes real from 
+fake. 
+ 
+83. What is LSTM? 
+Answer: 
+Long Short-Term Memory is an RNN architecture designed to capture long-range 
+dependencies and mitigate vanishing gradients, used in sequences. 
+ 
+84. What is data augmentation? 
+Harsh Choudhary 
+Answer: 
+A process of creating new training samples by modifying existing ones (e.g., 
+rotation, flipping images) to improve model robustness and generalization. 
+ 
+85. What is dropout in neural networks? 
+Answer: 
+A regularization method where random neurons are set to zero during training 
+to reduce overfitting and improve generalization. 
+ 
+86. What is word2vec? 
+Answer: 
+An algorithm for learning word embeddings—maps words to a vector space 
+such that similar words have close vector representations. 
+ 
+87. What is the difference between Bag of Words and TF-IDF? 
+Bag of Words TF-IDF (Term Frequency-Inverse Document 
+Frequency) 
+Counts word 
+occurrences 
+Weighs words by frequency and 
+distinctiveness 
+Ignores importance Reflects word relevance in document/context 
+ 
+88. What is a learning rate scheduler? 
+Answer: 
+A tool that adjusts the learning rate during training, often reducing it when 
+improvement plateaus, for better convergence. 
+Harsh Choudhary 
+ 
+89. What is ensemble bagging vs. boosting in one line? 
+Answer: 
+Bagging averages predictions from many independent models; boosting builds 
+models sequentially, each focusing on correcting predecessors’ errors. 
+ 
+90. What is pipeline in scikit-learn? 
+Answer: 
+A pipeline chains preprocessing steps and estimator(s) so the entire workflow 
+can be treated as one composite model. 
+Code Example: 
+python 
+from sklearn.pipeline import Pipeline 
+pipe = Pipeline([('scaler', StandardScaler()), ('clf', LogisticRegression())]) 
+pipe.fit(X_train, y_train) 
+91. What is attention mechanism in deep learning? 
+Answer: 
+A technique allowing neural networks to focus on specific parts of input data 
+(such as tokens in NLP), improving performance in sequence tasks. 
+ 
+92. What is the Transformer architecture? 
+Answer: 
+A deep learning model using self-attention to process sequences in parallel, 
+highly effective for language tasks (e.g., GPT, BERT). 
+ 
+93. What is BERT? 
+Harsh Choudhary 
+Answer: 
+Bidirectional Encoder Representations from Transformers—pre-trained NLP 
+model using transformer architecture for understanding language context. 
+ 
+94. What is fine-tuning in deep learning? 
+Answer: 
+Adapting a pre-trained model on a subset of new data, useful for efficient 
+training on specific tasks. 
+ 
+95. What is multi-class classification? 
+Answer: 
+Prediction where outputs can belong to more than two categories (e.g., 
+classifying types of fruit). 
+ 
+96. What is multi-label classification? 
+Answer: 
+A problem where each input can be assigned multiple labels (e.g., tagging 
+images with multiple objects). 
+ 
+97. What is zero-shot learning? 
+Answer: 
+Machine learning where the model can correctly predict on classes not seen in 
+training, often using semantic relationships. 
+ 
+98. What is reinforcement learning? 
+Answer: 
+Learning process where agents take actions in an environment to maximize a 
+reward signal over time. 
+Harsh Choudhary 
+ 
+99. What is Q-learning? 
+Answer: 
+A reinforcement learning algorithm that learns optimal actions using the Q-value 
+function for each state-action pair. 
+ 
+100. What is Markov Decision Process (MDP)? 
+Answer: 
+A framework for modeling decision-making, involving states, actions, rewards, 
+and transition probabilities, used in RL. 
+ 
+101. What is the exploding gradient problem? 
+Answer: 
+When gradients grow uncontrollably, causing unstable updates during neural 
+network training, especially in deep or recurrent architectures. 
+ 
+102. What is a custom loss function? 
+Answer: 
+A user-defined metric for training models, implemented by subclassing or 
+defining functions in libraries (Keras, PyTorch). 
+ 
+103. What is data leakage? 
+Answer: 
+When information from outside the training dataset is used to create the model, 
+leading to over-optimistic evaluations. 
+ 
+104. What is explainable AI (XAI)? 
+Harsh Choudhary 
+Answer: 
+A field focusing on making machine learning model predictions understandable 
+by humans. 
+ 
+105. What is feature importance? 
+Answer: 
+A measure of the contribution of each input variable to the prediction, often 
+provided by tree-based models. 
+ 
+106. What is an outlier? 
+Answer: 
+A data point significantly different from others—can distort statistical analyses 
+and model performance. 
+ 
+107. What is time series forecasting? 
+Answer: 
+Predicting future values based on historical data with temporal sequence, using 
+models like ARIMA, LSTM. 
+ 
+108. What is ARIMA? 
+Answer: 
+Auto-Regressive Integrated Moving Average—a popular linear time series 
+forecasting model. 
+ 
+109. What is hyperparameter optimization? 
+Answer: 
+Systematic approach to finding the best hyperparameters for a model, using 
+Grid Search, Random Search, Bayesian Optimization. 
+Harsh Choudhary 
+ 
+110. What is the difference between supervised and unsupervised learning in 
+one line? 
+Answer: 
+Supervised learning uses labeled data for training; unsupervised learning finds 
+structure in unlabeled data. 
+111. What is feature drift? 
+Answer: 
+Feature drift occurs when the statistical properties of input features change over 
+time, potentially degrading model performance. 
+ 
+112. What is concept drift? 
+Answer: 
+Concept drift happens when the statistical relationship between input and 
+output changes over time, impacting model predictions. 
+ 
+113. What is Semi-supervised Learning? 
+Answer: 
+A learning paradigm where the model is trained on a small amount of labeled 
+data plus a large amount of unlabeled data. 
+ 
+114. What is active learning? 
+Answer: 
+A technique where the model interactively queries the user or oracle to label 
+new data points, improving learning efficiency. 
+ 
+115. What is SMOTE? 
+Harsh Choudhary 
+Answer: 
+Synthetic Minority Over-sampling Technique—generates synthetic examples for 
+the minority class to address class imbalance. 
+Code Example: 
+python 
+from imblearn.over_sampling import SMOTE 
+sm = SMOTE() 
+X_res, y_res = sm.fit_resample(X, y) 
+ 
+116. What is precision-recall curve? 
+Answer: 
+A plot that visualizes the trade-off between precision and recall for different 
+probability thresholds of a classifier. 
+ 
+117. What is model calibration? 
+Answer: 
+Adjusting the model’s predicted probabilities to better reflect true likelihood, 
+often with Platt scaling or isotonic regression. 
+ 
+118. What is label smoothing? 
+Answer: 
+A regularization technique where target labels are adjusted (smoothed) to avoid 
+overconfidence in models, common in deep learning. 
+ 
+119. What is the difference between hard and soft classification? 
+Harsh Choudhary 
+Hard Classification Soft Classification 
+Predicts class labels only Predicts probabilities for each class 
+ 
+120. What is early fusion and late fusion in multimodal learning? 
+Answer: 
+Early fusion combines raw features from multiple modalities; late fusion 
+combines predictions or learned representations. 
+ 
+121. What is data pipeline? 
+Answer: 
+A series of data processing steps (cleaning, feature engineering, modeling, 
+deployment) organized in a sequence for reproducibility and automation. 
+ 
+122. What is multi-output regression? 
+Answer: 
+Predicting multiple continuous values simultaneously in a regression task. 
+ 
+123. What is data versioning and why is it important? 
+Answer: 
+Tracking different versions of datasets used in ML experiments, enabling 
+reproducibility and auditing of results. 
+ 
+124. What is hyperparameter search space? 
+Answer: 
+Range and values of all tunable parameters considered during optimization. 
+Harsh Choudhary 
+ 
+125. What is Quantile Regression? 
+Answer: 
+A regression technique predicting the conditional quantile values (rather than 
+mean), useful for modeling median or ranges. 
+ 
+126. What is distance metric learning? 
+Answer: 
+Learning an appropriate distance function (rather than using Euclidean, etc.) for 
+tasks like clustering, retrieval. 
+ 
+127. What is the silhouette coefficient formula? 
+Answer: 
+Given a point ii: s(i)=b(i)−a(i)max⁡(a(i),b(i))s(i)=max(a(i),b(i))b(i)−a(i) 
+where a(i)a(i): average intra-cluster distance, b(i)b(i): nearest-cluster distance. 
+ 
+128. What is the vanishing gradient problem mainly due to? 
+Answer: 
+Activation functions like sigmoid/tanh squash gradients, causing them to 
+diminish in deep networks. 
+ 
+129. What is feature hashing? 
+Answer: 
+A feature engineering technique using a hash function to convert categorical 
+variables into fixed-length vectors, often for NLP . 
+ 
+130. What is negative sampling? 
+Harsh Choudhary 
+Answer: 
+A technique used in training word embeddings or recommendation systems, 
+introducing fake (negative) examples to improve contrast with positive samples. 
+131. What is ensemble stacking and how does it work in practice? 
+Answer: 
+Stacking is an ensemble learning technique that combines multiple base models 
+(like decision trees, SVMs, neural networks) by training a new model (meta-
+learner) on their outputs. 
+• How it works: 
+1. Split the training data into two parts. 
+2. Train several base models on the first part. 
+3. Use these models to predict the second part (“out-of-fold” 
+predictions). 
+4. Train a meta-model using these predictions as input features to learn 
+optimal combinations. 
+5. At prediction time, all base models predict on the test data, and their 
+outputs feed into the meta-model for the final prediction. 
+Code Example: 
+python 
+from sklearn.ensemble import StackingClassifier 
+from sklearn.linear_model import LogisticRegression 
+from sklearn.tree import DecisionTreeClassifier 
+from sklearn.svm import SVC 
+ 
+estimators = [ 
+    ('tree', DecisionTreeClassifier()), 
+    ('svc', SVC(probability=True)), 
+Harsh Choudhary 
+] 
+clf = StackingClassifier( 
+    estimators=estimators, final_estimator=LogisticRegression()) 
+clf.fit(X_train, y_train) 
+Use case: Stacking is popular in ML competitions (like Kaggle) to squeeze out 
+extra performance by leveraging strengths of diverse models. 
+ 
+132. What is cross-validation leakage and how do you avoid it? 
+Answer: 
+Cross-validation leakage (data leakage) occurs when information from outside 
+the current training fold “leaks” into the fold, improperly inflating evaluation 
+scores. 
+• Example: Scaling or feature selection is performed before splitting into 
+folds, allowing test data to influence the transformation. 
+• How to avoid: 
+• Always fit data transformations (scalers, encoders) inside the cross-
+validation loop or use scikit-learn’s Pipeline to ensure 
+transformations are applied only to the training fold. 
+• Never peek at the test set during preprocessing or feature 
+engineering. 
+ 
+133. What is stratified k-fold cross-validation and when should you use it? 
+Answer: 
+Stratified k-fold keeps the class distribution consistent across all folds, ensuring 
+each training/validation set is representative of the whole dataset. 
+• When to use: For imbalanced classification tasks, you should prefer 
+stratified k-fold so minority/majority classes are equally represented in 
+each split. 
+Harsh Choudhary 
+Code Example: 
+python 
+from sklearn.model_selection import StratifiedKFold 
+skf = StratifiedKFold(n_splits=5) 
+for train_idx, val_idx in skf.split(X, y): 
+    X_train, X_val = X[train_idx], X[val_idx] 
+    y_train, y_val = y[train_idx], y[val_idx] 
+ 
+134. Explain the ROC curve, AUC, and their practical significance. 
+Answer: 
+• ROC Curve: Plots True Positive Rate (sensitivity) vs. False Positive Rate at 
+various thresholds. Used to evaluate binary classifier performance across 
+thresholds. 
+• AUC (Area Under Curve): Summarizes the ROC curve with a single number 
+(maximum = 1). Higher AUC means better discrimination between positive 
+and negative classes. 
+• Practical significance: Particularly useful for imbalanced problems and 
+when you care about rank ordering or threshold optimization, not just 
+accuracy. 
+Code Example: 
+python 
+from sklearn.metrics import roc_curve, roc_auc_score 
+y_prob = clf.predict_proba(X_test)[:,1] 
+fpr, tpr, thresholds = roc_curve(y_test, y_prob) 
+auc = roc_auc_score(y_test, y_prob) 
+ 
+Harsh Choudhary 
+135. What is XGBoost and why is it so popular? 
+Answer: 
+XGBoost is an efficient, optimized implementation of gradient boosting, 
+supporting parallelization, regularization, missing value handling, and more. 
+• Why popular: 
+• Consistently high accuracy 
+• Flexibility with many hyperparameters 
+• Handles large datasets, missing values 
+• Widely used in data science competitions 
+Code Example: 
+python 
+import xgboost as xgb 
+model = xgb.XGBClassifier() 
+model.fit(X_train, y_train) 
+ 
+136. What is regularization (L1, L2) and how do they help in ML? 
+Answer: 
+• L1 Regularization (Lasso): Adds absolute value of weights to loss, 
+encouraging sparsity (drives less important weights to zero, useful for 
+feature selection). 
+• L2 Regularization (Ridge): Adds squared magnitude of weights to loss, 
+discouraging large weights and thus reducing overfitting. 
+• How it helps: Prevents overfitting, improves generalization, and can result 
+in simpler, more interpretable models. 
+Code Example: 
+python 
+Harsh Choudhary 
+from sklearn.linear_model import Lasso, Ridge 
+lasso = Lasso(alpha=0.1) 
+ridge = Ridge(alpha=1.0) 
+ 
+137. How does early stopping work and why does it improve generalization? 
+Answer: 
+Early stopping monitors model performance on a validation set during training. 
+Training is stopped when validation loss fails to improve for a set number of 
+epochs (patience). 
+• Why it's useful: Prevents overfitting by not allowing the model to 
+"memorize" the training data. The model is selected at the point where it 
+best generalizes. 
+Practical tip: Use with deep learning, boosting, and any iterative training process 
+with clear validation metrics. 
+ 
+138. Explain learning rate annealing and why you might use it. 
+Answer: 
+Learning rate annealing gradually decreases the learning rate during training, 
+helping the model to converge smoothly and escape local minima. 
+• Strategies: Step decay, exponential decay, reduce on plateau, etc. 
+Code Example (Keras): 
+python 
+from keras.callbacks import ReduceLROnPlateau 
+ReduceLROnPlateau(monitor='val_loss', factor=0.1, patience=5) 
+Why use: Large initial rates speed up learning; smaller rates later refine the 
+solution, avoiding oscillations. 
+ 
+Harsh Choudhary 
+139. What is the difference between recall and specificity? 
+Answer: 
+• Recall (True Positive Rate): Measures the proportion of actual positives 
+captured by the model. 
+Recall=TPTP+FNRecall=TP+FNTP 
+• Specificity (True Negative Rate): Measures the proportion of actual 
+negatives correctly identified. 
+Specificity=TNTN+FPSpecificity=TN+FPTN 
+• Use cases: Use recall when missing positives is costly (medical diagnoses). 
+Use specificity when false positives are costly (spam filters). 
+ 
+140. How do you handle categorical variables in tree-based models as 
+compared to linear models? 
+Answer: 
+• Linear Models: Require numeric input, so you must perform label 
+encoding or one-hot encoding. 
+• Tree-based Models (e.g., Decision Trees, Random Forests): Can handle 
+label-encoded categoricals natively, since splits occur on discrete values 
+and the ordering is not learned. 
+• Advanced: Some modern tree implementations (like CatBoost, LightGBM) 
+have specialized handling for categorical variables without explicit 
+encoding. 
+141. What is multi-head attention and why is it important in Transformers? 
+Answer: 
+Multi-head attention allows the model to jointly attend to information from 
+different representation subspaces at different positions, enabling richer 
+representation of input. For each “head,” the model learns independent 
+attention scores, then concatenates their outputs. 
+Harsh Choudhary 
+• Importance: 
+• Enables learning of multiple relationships simultaneously (syntax, 
+semantics, etc.) 
+• Boosts capability of networks for tasks like translation, 
+summarization, and vision problems. 
+ 
+142. What are positional encodings in Transformer models? 
+Answer: 
+Since Transformers have no inherent notion of sequence (unlike RNNs), 
+positional encodings inject information about order/position of tokens in a 
+sequence—typically using sinusoidal or learned vectors added to input 
+embeddings. 
+ 
+143. What is attention masking? 
+Answer: 
+Attention masking is used in Transformers to avoid attending to certain 
+positions, such as padding tokens or future tokens (for sequence-to-sequence 
+modeling or autoregressive tasks). Ensures the model doesn’t “cheat” by looking 
+ahead. 
+ 
+144. What is transfer learning? (Advanced context) 
+Answer: 
+Transfer learning leverages knowledge from a pre-trained model (often on a 
+massive dataset) to rapidly adapt to a new but related task: 
+• Fine-tuning: Unfreeze some or all layers and re-train on smaller, task-
+specific data. 
+• Feature extraction: Use pre-trained model as a fixed feature extractor by 
+only training new layers. 
+Harsh Choudhary 
+In NLP and vision, transfer learning can achieve strong results with less data and 
+compute. 
+ 
+145. Describe bag-of-words vs. embeddings for NLP . 
+Answer: 
+• Bag-of-words (BoW): Represents documents as unstructured collections 
+(vectors) of word counts or indicators, ignoring order/context. 
+• Embeddings: Map words/tokens to dense vectors in a continuous space, 
+preserving semantic relationships and often capturing analogy or similarity 
+(e.g., king-man+woman=queen). 
+• Embeddings (Word2Vec, GloVe, BERT) are preferred for neural networks 
+due to richer information. 
+ 
+146. What are residual connections and why do they work? 
+Answer: 
+Residual (skip) connections add the input of a layer directly to its output (e.g., in 
+ResNets): 
+output=F(x)+xoutput=F(x)+x 
+• Why: 
+• Allows gradients to flow more easily through deep networks 
+• Eases optimization, enabling very deep neural architectures 
+ 
+147. What is label propagation in semi-supervised learning? 
+Answer: 
+Label propagation assigns class labels to unlabeled points based on their 
+similarity to labeled examples—using a graph-based approach to spread known 
+labels through the dataset. 
+Harsh Choudhary 
+ 
+148. What are variational autoencoders (VAEs)? 
+Answer: 
+VAEs are a type of generative unsupervised neural network. They encode input 
+to a probabilistic latent space, then decode to reconstruct data—enabling new 
+sample generation, interpolation, and probabilistic reasoning. 
+ 
+149. What is quantization in deploying ML models? 
+Answer: 
+Quantization reduces the precision of the numbers (weights/activations) used in 
+a model (e.g., float32 to int8), making it efficient for edge devices/mobile 
+deployment, with normally only minor loss in accuracy. 
+ 
+150. Explain knowledge distillation. 
+Answer: 
+A technique to transfer knowledge from a large, complex model (“teacher”) to a 
+smaller, faster “student” model by training the student to mimic the output or 
+behavior of the teacher, allowing for lightweight/efficient inference. 
+ 
+151. What is transfer learning “domain adaptation”? 
+Answer: 
+Domain adaptation specifically refers to transferring knowledge between 
+differing but related data distributions—adjusting representations/models to 
+maintain performance as distributions shift between source (training) and target 
+(deployment) data. 
+ 
+152. What is meta-learning (“learning to learn”)? 
+Harsh Choudhary 
+Answer: 
+Meta-learning algorithms learn how to adapt quickly to new tasks with minimal 
+data by finding initialization or design strategies that generalize well—for 
+example, MAML (Model-Agnostic Meta-Learning). 
+ 
+153. What is CatBoost and how does it handle categorical features? 
+Answer: 
+CatBoost is a gradient boosting library designed to natively handle categorical 
+variables without explicit encoding, using permutation-driven statistics during 
+training, so you don’t need to “one-hot” encode categoricals. 
+ 
+154. What is LIME (Local Interpretable Model-agnostic Explanations)? 
+Answer: 
+LIME explains model predictions by locally perturbing the input and fitting a 
+simple interpretable model (like linear regression) on the prediction results to 
+approximate the model’s behavior in the local region. 
+ 
+155. What is SHAP and how does it differ from LIME? 
+Answer: 
+SHAP (SHapley Additive exPlanations) computes feature attributions for 
+individual predictions based on cooperative game theory, providing consistent 
+and theoretically-sound explanations; LIME is local and heuristic-based, while 
+SHAP is global and has theoretical guarantees. 
+ 
+156. What is out-of-bag (OOB) error in random forests? 
+Answer: 
+OOB error estimates generalization accuracy using, for each tree, the samples 
+not included (“out-of-bag”) in that tree’s bootstrap sample. Random forest 
+Harsh Choudhary 
+combines these OOB predictions as a built-in cross-validation metric—no need 
+to hold out validation data. 
+ 
+157. Explain the difference between bagging and boosting in real-world use. 
+Answer: 
+Bagging (e.g., Random Forest): Reduces variance and helps with overfitting by 
+averaging many independent models. 
+Boosting (e.g., XGBoost): Reduces bias by building sequential models, each 
+correcting its predecessor’s errors, often delivering stronger results for 
+structured/tabular data. 
+ 
+158. What is pipelining in MLOps? 
+Answer: 
+Pipelining in MLOps automates and chains all stages of ML (data collection, 
+preprocessing, training, testing, deployment) to improve reproducibility, 
+monitoring, and rapid iteration (e.g., using Kubeflow, MLflow, or Airflow). 
+ 
+159. What is explainability vs. interpretability? 
+Answer: 
+• Interpretability: How well a human can understand the decisions of a 
+model (simple models, feature importance). 
+• Explainability: Tools/techniques to make “black box” models 
+understandable, e.g., SHAP , LIME, counterfactual explanations. 
+ 
+160. What are Bayesian neural networks, and what’s their advantage? 
+Answer: 
+Bayesian neural networks add uncertainty estimation to weights and 
+predictions, enabling better calibrated confidence intervals, outlier detection, 
+Harsh Choudhary 
+and robust decision making, especially useful in risk-sensitive applications like 
+medicine and finance. 
+161. What is adversarial training in deep learning? 
+Answer: 
+Adversarial training is a method to make models robust against adversarial 
+attacks—inputs that have been intentionally perturbed to fool a model. In 
+practice, adversarial examples (generated using techniques like FGSM or PGD) 
+are added to the training data, and the model is trained to classify both clean 
+and adversarial samples correctly. 
+• Use-case: Security-sensitive applications (e.g., autonomous vehicles, 
+biometrics) to defend against malicious input manipulation. 
+ 
+162. What is curriculum learning? 
+Answer: 
+Curriculum learning is a training strategy where a model is first exposed to 
+easier examples or subtasks, and the complexity gradually increases. 
+• Why: Mimics how humans learn; can speed up convergence and improve 
+generalization, especially in challenging deep learning tasks. 
+ 
+163. What is self-supervised learning? 
+Answer: 
+Self-supervised learning leverages the data’s own structure for supervision. 
+Models generate their own labels from input data—e.g., predicting masked 
+words in a sentence (BERT) or the next video frame. 
+• Applications: Pre-training models for NLP , vision, and audio to learn 
+reusable representations. 
+ 
+164. What is reinforcement learning “reward shaping”? 
+Harsh Choudhary 
+Answer: 
+Reward shaping involves modifying the reward function to provide more 
+frequent or informative feedback. This helps agents learn optimal behaviors 
+faster or avoid undesirable states, but it must be done carefully to avoid 
+unintended behaviors. 
+ 
+165. What is Monte Carlo Tree Search? 
+Answer: 
+A search strategy for decision-making (especially in games), combining 
+randomness (Monte Carlo simulation) and tree search to explore promising 
+states efficiently. At each move, the algorithm simulates many games randomly 
+to estimate the value of each possible choice, then follows the best path. 
+• Famous use: AlphaGo’s superhuman performance in the game of Go. 
+ 
+166. What is bandit learning? 
+Answer: 
+Refers to multi-armed bandit problems where a learner balances “exploration” 
+(trying new actions) and “exploitation” (choosing the best-known action) to 
+maximize cumulative reward. 
+• Applications: Online advertising, A/B testing, recommendation engines. 
+ 
+167. What is the Gumbel-softmax trick? 
+Answer: 
+Enables differentiable sampling from a categorical distribution—crucial for 
+training neural networks where discrete choices are involved, such as in neural 
+architecture search or NLP models. 
+ 
+168. What is data sharding? 
+Harsh Choudhary 
+Answer: 
+Dividing large datasets into smaller, manageable pieces (shards) stored or 
+processed on different machines. 
+• Why: Improves scalability and performance for distributed/decentralized 
+machine learning systems. 
+ 
+169. What is federated learning? 
+Answer: 
+A distributed ML approach where models are trained across multiple devices 
+(e.g., smartphones), each with their own local data—without data leaving the 
+device. 
+• Benefits: Privacy, regulatory compliance, and less centralized data storage. 
+ 
+170. What is privacy-preserving ML? 
+Answer: 
+Methods and protocols that allow useful models to be trained or deployed 
+without exposing sensitive data. Includes techniques like differential privacy, 
+homomorphic encryption, and secure multiparty computation. 
+• Use-cases: Medical data, finance, federated learning. 
+ 
+171. What is differential privacy? 
+Answer: 
+A mathematical guarantee that inclusion or exclusion of a single data point 
+minimally affects the model’s output. Achieved by adding calibrated noise to 
+data or results, shielding individual records. 
+• Industry adoption: Used by Apple, Google, and the U.S. Census Bureau. 
+ 
+172. What is knowledge graph embedding? 
+Harsh Choudhary 
+Answer: 
+A method to represent entities and relationships in a knowledge graph as low-
+dimensional vectors. 
+• Why: Allows graphs to be used in ML models for applications like question 
+answering, link prediction, and recommendation. 
+ 
+173. What is a graph neural network (GNN)? 
+Answer: 
+Neural networks that operate directly on graphs, learning representations for 
+nodes, edges, or whole graphs by aggregating information from a node’s 
+neighbors. 
+• Popular for: Social network analysis, molecule property prediction, fraud 
+detection. 
+ 
+174. What is node2vec? 
+Answer: 
+A scalable algorithm to generate vector representations (embeddings) of nodes 
+in large networks. It uses biased random walks to capture diverse patterns of 
+connectivity (community and structural equivalence). 
+ 
+175. What is singular value decomposition (SVD)? 
+Answer: 
+A factorization method for real or complex matrices, decomposing them into the 
+product of three matrices. 
+• Uses: Dimensionality reduction (e.g., LSA for NLP), recommender systems, 
+image compression. 
+ 
+176. What is robust regression? 
+Harsh Choudhary 
+Answer: 
+Regression techniques less sensitive to outliers compared to ordinary least 
+squares (OLS). 
+• Examples: RANSAC, Huber regression, Theil–Sen estimator. 
+ 
+177. What is evolutionary computation in ML? 
+Answer: 
+A family of optimization algorithms inspired by biological evolution (e.g., genetic 
+algorithms). Used to optimize models, hyperparameters, or generate novel 
+neural architectures. 
+ 
+178. What is multi-objective optimization? 
+Answer: 
+Optimization involving more than one conflicting metric (e.g., accuracy and 
+model size). Solutions are evaluated by Pareto optimality—improvement in one 
+objective means tradeoff in another. 
+• Example: Model accuracy vs. latency trade-offs in mobile deployment. 
+ 
+179. What is transferability in adversarial ML? 
+Answer: 
+Adversarial examples generated for one model can often fool different models 
+(even with varied architectures/training). 
+• Implication: Model robustness should be evaluated against both “white-
+box” and “black-box” attackers. 
+ 
+180. What is hyperparameter tuning with Bayesian Optimization? 
+Answer: 
+A search strategy that models the performance metric as a probabilistic function 
+Harsh Choudhary 
+of hyperparameters (e.g., Gaussian Process), choosing new hyperparameters to 
+try based on uncertainty and expected improvement. 
+• Pros: Needs fewer runs than grid/random search; often faster 
+convergence. 
+ 
+181. What is Nash Equilibrium in ML? 
+Answer: 
+In multi-agent settings (game theory), a Nash Equilibrium is a situation where no 
+agent can benefit by changing its own strategy if others keep theirs unchanged. 
+• Applications: Multi-agent reinforcement learning, GAN training dynamics. 
+ 
+182. What is hierarchical reinforcement learning? 
+Answer: 
+Organizes learning into a hierarchy: high-level “managers” set subgoals or 
+options that lower-level policies accomplish. 
+• Why: Improves learning efficiency and scalability in complex, long-horizon 
+tasks. 
+ 
+183. What is the difference between exploration and exploitation in RL? 
+Answer: 
+• Exploration: Trying new actions to discover rewards. 
+• Exploitation: Leveraging known actions that give high rewards. 
+• Balance: Key to ensure RL agents don’t get stuck in suboptimal behaviors. 
+ 
+184. What is the curse of dimensionality? 
+Answer: 
+As the number of features increases: 
+Harsh Choudhary 
+• Data becomes sparse (more combinations to cover). 
+• Distance measures 
+185. What is active sampling in ML? 
+Answer: 
+Active sampling (often part of active learning) is a data selection strategy where 
+the model identifies data points whose labels would most improve the model if 
+known. 
+• Why it matters: In situations where manual labeling is costly or slow 
+(medical images, legal documents), actively selecting “uncertain” or 
+“borderline” samples leads to faster performance gains with less data. 
+• Techniques: Uncertainty sampling, query-by-committee, expected model 
+change, diversity sampling. 
+ 
+186. What is knowledge transfer in multi-task learning? 
+Answer: 
+In multi-task learning (MTL), knowledge transfer occurs when learning one task 
+improves performance in another by sharing representations or features. 
+• Example: A neural network learns to detect both “cars” and “trucks” in 
+images; learning the shape of wheels helps both. 
+• Benefit: Better generalization, reduced risk of overfitting, data efficiency—
+especially when some tasks have less data. 
+ 
+187. What is continual learning? 
+Answer: 
+Continual learning (lifelong learning) is the capability of models to learn new 
+tasks sequentially while retaining knowledge learned from previous tasks 
+(avoiding “catastrophic forgetting”). 
+Harsh Choudhary 
+• Importance: Real-world systems (e.g., personal assistants, robots) need to 
+adapt over time without retraining from scratch. 
+ 
+188. What is elastic net regularization? 
+Answer: 
+Elastic Net combines L1 (lasso) and L2 (ridge) penalties in regression: 
+• L1: Drives some coefficients to zero (feature selection). 
+• L2: Shrinks all coefficients to prevent overfitting. 
+• When useful: When there are many correlated predictors; balances 
+variable selection and model stability. 
+ 
+189. What is intercept bias in regression? 
+Answer: 
+The intercept (or bias) is the constant term in regression models, allowing the 
+fitted function to move up or down to best match the data. 
+• Without it: Predictions are forced through the origin, possibly distorting 
+results. 
+ 
+190. What is polynomial regression? 
+Answer: 
+A type of regression where input variables are raised to integer powers to 
+capture non-linear trends. 
+• Example: Fitting a parabolic curve for data with quadratic relationships. 
+• Risk: Higher degrees capture more complexity but can overfit; 
+regularization or cross-validation is important. 
+ 
+191. What are the limitations of Deep Learning? 
+Harsh Choudhary 
+Answer: 
+• Data Intensive: Requires large labeled datasets. 
+• Computationally Expensive: High training/inference costs (time, 
+hardware). 
+• Lack of Interpretability: Often yields “black box” predictions. 
+• Sensitive to Adversarial Attacks: Vulnerable to small, crafted input 
+changes. 
+• Overfitting: Can memorize if not regularized properly or data is scarce. 
+• Deployment Difficulties: Sometimes hard to update or control large 
+models in production. 
+ 
+192. What is active learning and when is it useful? 
+Answer: 
+Active learning is a setting where a model can interactively query a human 
+annotator for labels on the most uncertain or informative samples. 
+• When useful: When labeling data is expensive/scarce; to maximize 
+learning efficiency (e.g., medical AI, rare events). 
+ 
+193. What is the role of feature importance in ML projects? 
+Answer: 
+Feature importance scores help identify which features most influence the 
+predictions. 
+• Why important: Guides data collection, feature engineering, and trust in 
+model decisions. 
+• In practice: Used for model interpretation, debugging, compliance, and 
+scientific discovery. 
+ 
+Harsh Choudhary 
+194. What is batch normalization and why is it so critical for deep networks? 
+Answer: 
+Batch normalization normalizes intermediate activations in a neural network, 
+stabilizing and accelerating training. 
+• Benefits: Faster convergence, higher learning rates, regularization effect, 
+less sensitivity to initialization. 
+ 
+195. Why are ensemble models often used in Kaggle competitions? 
+Answer: 
+Ensembles combine strengths and compensate for weaknesses of various 
+models, pushing accuracy and generalization higher than any single model. 
+• Kaggle effect: Final “winning” solutions often average or stack dozens of 
+diverse models for a performance edge. 
+ 
+196. What is dropout and how does it help prevent overfitting? 
+Answer: 
+Dropout randomly disables a proportion of neurons during each training pass, 
+forcing redundancy in representation and discouraging any single pathway’s 
+dominance. 
+• Result: Significant boost in test-time generalization, especially in large 
+networks. 
+ 
+197. What is early stopping? 
+Answer: 
+Early stopping halts training when a monitored score (e.g., validation loss) stops 
+improving for a set number of iterations (“patience”). 
+• Effect: Reduces risk of overfitting; preserves the weights of the model that 
+best generalizes to unseen data. 
+Harsh Choudhary 
+ 
+198. Why is interpretability increasingly important in ML? 
+Answer: 
+As ML models are used for consequential decisions (loans, diagnostics, hiring), 
+stakeholders must understand, trust, and audit model predictions. 
+• Consequences: Legal, ethical, and practical—interpretability is at the heart 
+of AI safety and responsible deployment. 
+ 
+199. What is class imbalance and its impact? 
+Answer: 
+Imbalanced data means most samples belong to one class (majority), with very 
+few in another (minority), such as fraud detection or rare disease diagnosis. 
+• Impact: Models “cheat” by always predicting the majority class—minority 
+detection suffers; misleading accuracy metrics. 
+ 
+200. How do you address class imbalance? 
+Answer: 
+• Rebalancing the Data: Oversample minority (SMOTE), undersample 
+majority. 
+• Adjusting Algorithms: Use class weights, modify decision thresholds. 
+• Careful Evaluation: Focus on recall, precision, F1, ROC-AUC—never just 
+overall accuracy. 
+ 
+201. What is transfer learning and why is it transformative for small datasets? 
+Answer: 
+Transfer learning means using pre-trained models as starting points on new—
+but related—tasks. 
+Harsh Choudhary 
+• Why important: Achieves high accuracy with less data and computation, 
+democratizing advanced ML for small or domain-specific datasets. 
+ 
+202. What are SHAP values and how do they aid explainability? 
+Answer: 
+SHAP (Shapley Additive exPlanations) quantify each feature’s additive 
+contribution to a model’s prediction using cooperative game theory. 
+• Strengths: Local and global interpretability; theoretical consistency; can be 
+applied across many model types. 
+ 
+203. What is feature drift and concept drift? 
+Answer: 
+• Feature drift: Changes in the distribution of predictor variables. 
+• Concept drift: Changes in the mapping from input features to the target 
+variable. 
+• Impact: Reduces model performance over time; continuous monitoring 
+and retraining are needed in production. 
+ 
+204. What is model calibration and why is it important? 
+Answer: 
+Calibration means predicted probabilities reflect real-world frequencies. 
+• Example: In a calibrated medical model, 70% risk should mean the event 
+actually happens 70% of the time. 
+• Why important: Essential for risk-sensitive applications; can be achieved 
+with Platt scaling, isotonic regression. 
+ 
+205. What is bootstrapping and why is it used? 
+Harsh Choudhary 
+Answer: 
+Bootstrapping involves generating many resampled datasets (with replacement) 
+from the original data to estimate variability, build confidence intervals, or 
+power bagging/ensembles. 
+• Advantages: Provides insights into model stability and predictions; 
+essential for statistical inference and robust modeling. 

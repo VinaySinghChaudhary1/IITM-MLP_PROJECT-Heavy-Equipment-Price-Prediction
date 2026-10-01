@@ -1,0 +1,1011 @@
+End to end Machine Learning
+Project
+Machine Learning Practice Course
+2
+Outline
+               1. Steps in ML projects
+               2. Illustration through practical set up
+3
+ Excellent wine company wants to develop ML model for predicting wine
+quality  on certain physiochemical characteristics  in order to replace
+expensive quality sensor .
+ Let's understand steps involved in addressing this problem. 
+ML Project
+4
+Steps in ML projects
+1 .   Look at the big picture.
+2 .   Get the data.
+3 .   Discover and visualize the data to gain insights.
+4 .   Prepare the data for Machine Learning algorithms.
+5 .   Select a model and train it.
+6 .   Fine-tune your model.
+7 .   Present your solution.
+8 .   Launch, monitor and maintain your system.
+5
+A few words of wisdom
+ ML is usually a small piece in a big project. e.g. wine quality
+prediction is a small piece in setting up the manufacturing
+process.
+ T ypically 10-15% of time is spent on ML.
+ A lot more time is spent on capturing and processing data
+needed for ML and taking decisions based on output of ML
+module. 
+Needs strong collaboration with domain experts, product
+managers and eng-teams for successful execution. 
+6
+Step 1: Look at the big picture
+1 . Frame the problem
+2 . Select a performance measure
+3 . List and check the assumptions
+ 1.1 Frame the problem
+ What is input and output?
+ What is the business objective? How does company expects to use and
+beneﬁt from the model?  
+ Useful in problem framing 
+ Algorithm and performance measure selection
+ Overall ef fort estimation
+ What is the current solution (if any)?
+ Provides a useful baseline
+7
+Design consideration in problem framing
+Is this a supervised, unsupervised or a RL  problem?
+Is this a classiﬁcation, regression  or some other task?
+What is the nature of the output: single  or multiple  outputs?
+Does system need continuous learning  or periodic updates ?
+What would be the learning style: batch  or online ?
+8
+1.2 Selection of performance measure
+Regression
+Mean Squared Error (MSE) or
+Mean Absolute Error (MAE)
+Classiﬁcation
+Precision
+Recall
+F1-score
+Accuracy
+9
+1.3 Check the assumptions
+List down various assumptions about the task.
+Review with domain experts and other teams that plan to consume ML output.
+Make sure all assumptions are reviewed and approved before coding!
+10
+Step 2: Get the data
+Data spread across multiple tables, ﬁles or documents with access control.
+Obtain appropriate access controls and authorizations.
+Get familiarized with data by looking at schema and a few rows. (Familiarity with
+SQL would be useful here.)
+import  pandas as  pd
+import  matplotlib.pyplot as  plt
+import  seaborn as  sns
+import  numpy as  np
+1
+2
+3
+4
+Load basic libraries
+11
+Let's ﬁrst access our data - in this case, we need to download it from the web.
+It's a good practice to create a function for downloading and extracting the
+data.
+data_url  = 'https://archive.ics.uci.edu/ml/machine-learning-
+databases/wine-quality/winequality-red.csv'
+data  = pd.read_csv(data_url, sep= ";" )
+1
+2
+Now that the data is loaded, let's examine it.
+12
+2.1 Check data samples
+Let's look at a few data samples with head() method.
+data .head()
+1
+13
+2.2 Features
+It's a good idea to understand signiﬁcance of each feature by consulting the experts.
+Feature Signiﬁcance
+Fixed acidity Most acids involved with wine or ﬁxed or nonvolatile (do
+not evaporate readily)
+V olitile acidity The amount of acetic acid in wine, which at too high of
+levels can lead to an unpleasant, vinegar taste
+Citric acid Found in small quantities, citric acid can add 'freshness'
+and ﬂavor to wines
+Residual sugar it's rare to ﬁnd wines with less than 1 gram/liter and wines
+with greater than 45 grams/liter are considered sweet.
+Chlorides The amount of salt in the wine.
+ 
+Alcohol The percentage of alcohol contents in the wine.
+ (Credits: )https://www .kaggle.com/uciml/red-wine-quality-cortez-et-al-2009
+⋮
+⋮
+14
+feature_list = data. columns [:- 1 ]. values
+label  = [data. columns [- 1 ]]
+ 
+print  ( "Feature list:" , feature_list)
+print  ( "Label:" , label )
+1
+2
+3
+4
+5
+Feature list:  ['fixed acidity' 'volatile acidity' 'citric acid'  
+'residual sugar' 'chlorides' 'free sulfur dioxide' 'total  
+sulfur dioxide' 'density' 'pH' 'sulphates' 'alcohol'] Label:  
+['quality']
+15
+2.3 Data statistics
+Let's use info()   method to get
+quick description of data.
+data .info()
+1
+16
+T otal entries: 1599 (T iny dataset by
+ML standard)
+There are total 12 columns: 1 1
+features + 1 label
+Label column:  quality
+Features: [ﬁxed acidity , volitile
+acidity , citric acid, residual sugar ,
+cholrides, free sulphur dioxide,
+total sulphur dioxide, density , pH,
+sulphates, alcohol]
+All columns are numeric (ﬂoat64) and
+label is an integer .
+2.3 Data statistics
+17
+In order to understand nature of numeric attribites, we use describe()  method.
+data .describe()
+1
+This one prints count and statistical properties - mean, standard deviations and
+quartiles.
+18
+The wine quality can be between 0 and 10 , but in this dataset, the quality values
+are between 3 and 8. Let's look at the distribution of examples by the wine quality .
+data [ 'quality' ] .value_counts ()
+1
+High quality value  better quality of wine→
+Y ou can see that there are lots of samples of average wines than good or the poor
+quality ones.
+Many examples with quality = 5 or 6
+19
+The information can be viewed through histogram plot.
+A Histogram gives the count of how many samples occurs within a speciﬁc range (bins).
+The x-axis denotes the range of values in a feature and
+The y-axis denotes the frequency of samples with those speciﬁc values.
+sns .set ()
+data .quality .hist ()
+plt .xlabel ( 'Wine Quality' )
+plt .ylabel ( 'Count' )
+1
+2
+3
+4
+Note taller bars for quality 5 and 6 compared to the other qualities.
+20
+In a similar manner, we can plot all numerical attributes with histogram plot for quick
+examination.
+21
+A few observations based on these plots:
+1 . Features are at dif ferent scales.
+2 . Features have dif ferent distributions -
+A few are tail heavy . e.g. residual sugar , free so2
+A few have  multiple modes. e.g. volitile acidity , citric acid
+Before any further exploration, it's a good idea to separate test set and do not look at it
+in order to have a clean evaluation set.
+22
+2.4 Create test set
+When we look at the test set, we are likely to notice patterns in that and based
+on that we may select certain models.
+This leads to biased estimation on test set, which may not generalize well in
+practice. This is called data snooping bias .
+23
+Let's write a function to split the data into training and test. Make sure to set the seed so
+that we get the same test set in the next run.
+def  split_train_test(data, test_ratio):
+  # set the random seed.
+  np.random.seed(42)
+  # shuffle the dataset.
+  shuffled_indices  = np.random.permutation(len(data))
+  # calculate the size of the test set.
+  test_set_size  = int(len(data) * test_ratio)
+  # split dataset to get training and test sets.
+  test_indices  = shuffled_indices[:test_set_size]
+  train_indices  = shuffled_indices[test_set_size:]
+  return  data.iloc[train_indices], data.iloc[test_indices]
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+train_set , test_set = split_train_test(data, 0 . 2 )
+1
+24
+Scikit-Learn provides a few functions for creating test sets based on               
+1 . Random sampling , which randomly selects % points in the test set.          k
+2 . Stratiﬁed sampling , which samples test examples such that they are
+representative of overall distribution.
+25
+Random sampling
+train_test_split() function performs random sampling with
+random_state  parameter to set the random seed, which ensures that the
+same examples are selected for test sets across runs.
+test_size parameter for specifying size of the test set.
+shufﬂe ﬂag  to specify if the data needs to be shufﬂed before splitting.
+Provision for processing multiple datasets with an identical number of rows and
+selecting the same indices from these datasets.
+Useful when labels are in dif ferent dataframe.
+from sklearn.model_selection import train_test_split
+1
+26
+W e can read the documentation for this function by using the following line of code:
+?train_test_split
+1
+from sklearn.model_selection import train_test_split
+1
+27
+Let's perform random sampling on our dataset:
+train_set, test_set = train_test_split(data, test_size=0.2, random_state=42)
+1
+28
+Stratiﬁed sampling
+Data distribution may not be uniform in real world data.
+Random sampling - by its nature - introduces biases in such data sets.
+Recall the label distribution in our dataset: It's not uniform!
+sns .set ()
+data .quality .hist ()
+plt .xlabel ( 'Wine Quality' )
+plt .ylabel ( 'Count' )
+1
+2
+3
+4
+Many examples of class 5 and 6 compared to the other classes.
+This causes a problem while random sampling. The test distribution may not match
+with the overall distribution.
+29
+How do we sample in such cases?
+W e divide the population into homogenous groups called strata .
+Data is sampled from each stratum so as to match it with the overall data distribution.
+Scikit-Learn provides a class StratiﬁedShufﬂeSplit that helps us in stratiﬁed sampling.
+from  sklearn.model_selection import  StratifiedShuffleSplit
+split  = StratifiedShuffleSplit (n_splits= 1 , test_size= 0.2 , random_state= 42 )
+for  train_index, test_index in  split.split( data , data ["quality"]):
+  strat_train_set = data .loc[train_index]
+  strat_test_set = data .loc[test_index]
+1
+2
+3
+4
+5
+Let's examine the test set distribution by the wine quality that was used for stratiﬁed
+sampling.
+strat_dist  = strat_test_set[ "quality" ].value_counts() / len(strat_test_set) 
+1
+30
+Now compare this with the overall distribution:
+overall_dist  = data ["quality"].value_counts() / len( data )
+1
+Let's look at them side-by-side:
+dist_comparison = pd. DataFrame ({ 'overall' : overall_dist, 'stratified' : strat_dist})
+dist_comparison[ 'diff(s-o)' ] = dist_comparison[ 'stratified' ] - dist_comparison[ 'ove
+dist_comparison[ 'diff(s-o)_pct' ] = 100 *(dist_comparison[ 'diff(s-o)' ]/dist_compariso
+1
+2
+3
+31
+Y ou can notice that there is a small dif ference in most strata.
+dist_comparison
+1
+32
+random_dist = test_ set [ "quality" ] .value_counts ()  / len (test_set)  
+random_dist
+1
+2
+Let's contrast this with random sampling:
+33
+Sampling bias comparison
+    Compare the difference in distribution of stratiﬁed and uniform sampling:
+Stratiﬁed sampling gives us test distribution closer to the overall distribution than the
+random sampling.
+dist_comparison .loc [:, [ 'diff(s-o)_pct' , 'diff(r-o)_pct' ] ]
+1
+34
+Step 3: Data visualization
+Performed on training set.
+In case of large training set -
+Sample examples to form exploration set .
+Enables to understand features and their relationship among themselves and with
+output label.
+In our case, we have a small training data and we use it all for data exploration. There is
+no need to create a separate exploration set.
+It's a good idea to create a copy of the training set so that we can freely manipulate it
+without worrying about any manipulation in the original set.
+exploration_set  = strat_train_set.copy()
+1
+35
+Scatter Visualization
+With seaborn library:
+sns.scatterplot( x = 'fixed acidity' , y = 'density' , hue = 'quality' ,
+                data =exploration_set)
+1
+2
+36
+With matplotlib:
+exploration_set.plot( kind = 'scatter' , x = 'fixed acidity' , y = 'density' , alpha =0.5,
+                     c = "quality" , cmap =plt.get_cmap("jet"))
+1
+2
+37
+Relationship between features
+Standard correlation coefﬁcient  between features.
+Ranges between -1 to +1
+Correlation = +1 : Strong positive correlation between features
+Correlation = -1 : Strong negative correlation between features
+Correlation = 0 : No linear correlation between features
+V isualization with heat map
+Only captures linear relationship between features.
+For non-linear relationship, use rank correlation
+Let's calculate correlations between our features.
+corr_matrix  = exploration_set.corr()
+1
+38
+Let's check features that are correlated with the label, which is quality in our case.
+corr_matrix ['quality']
+1
+Notice that quality   has strong positive
+correlation with alcohol  content [0.48] and
+strong negative correlation with volitile
+acidity  [-0.38].
+39
+Let's visualize correlation matrix with heatmap:
+plt.figure(figsize=( 14 , 7 ))
+sns.heatmap( corr_matrix , annot=True)
+1
+2
+40
+41
+You can notice:
+The correlation coefﬁcient on diagonal is +1.
+Darker colors represent negative correlations, while
+fainter colors denote positive correlations. For example
+citric acid and ﬁxed acidity have strong positive
+correlation.
+pH and ﬁxed acidity have strong negative
+correlation.
+Another option to visualize the relationship between the
+feature is with scatter matrix.
+ 
+42
+from pandas .plotting  import scatter_matrix
+attribute_list = [ 'citric acid' , 'pH' , 'alcohol' , 'sulphates' , 'quality' ]
+scatter_matrix (exploration_set[attribute_list])
+1
+2
+3
+For convenience of
+visualization, we show it for
+a small number of attributes.
+43
+Similar analysis can be carried out with combined features - features that are
+derived from the original features.
+44
+Note of wisdom
+1 . V isualization and data exploration do not have to be absolutely thorough.
+2 . Objective is to get quick insight into features and its relationship with other features
+and labels.
+3 . Exploration is an iterative process: Once we build model and obtain more insights,
+we can come back to this step.
+45
+Step 4: Prepare data for ML algorithm
+W e often need to preprocess the data before using it for model building due to variety
+of reasons:
+T ypical steps in data preprocessing are as follows:
+It's a good practice to make a copy of the data and apply preprocessing on that copy .
+This ensures that in case something goes wrong, we will at least have original copy of
+the data intact.
+Due to errors in data capture, data may contain outliers or missing values.
+Dif ferent features may be at dif ferent scales.
+The current data distribution is not exactly amenable to learning.
+1 . Separate features and labels.
+2 . Handling missing values and outliers.
+3 . Feature scaling to bring all features on the same scale.
+4 . Applying certain transformations like log, square root on the features.
+46
+4.1 Separate features and labels from the training set.
+# Copy all features leaving aside the label.
+wine_features = strat_train_set.drop("quality", axis=1)
+ 
+# Copy the label list
+wine_labels = strat_train_set['quality'].copy()
+1
+2
+3
+4
+5
+47
+4.2 Data cleaning
+Let's ﬁrst check if there are any missing values in feature set: One way to ﬁnd that out is
+column-wise.
+wine_features.isna().sum() # counts the number of  NaN  in  each  column  of  wine_fe
+1
+In this dataset, we do not have any missing values.
+48
+In case, we have non-zero numbers in any columns, we have a problem of missing
+values.
+These values are missing due to errors in recording or they do not exist.
+If they are not recorded:
+Use imputation technique to ﬁll up the missing values.
+Drop the rows containing missing values.
+If they do not exists, it is better to keep it as NaN.
+Sklearn provides the following methods to drop rows containing missing values:
+dropna()
+drop()
+It provides SimpleImputer  class for ﬁlling up missing values with. say , median  value.
+49
+from  sklearn.impute import SimpleImputer
+imputer = SimpleImputer( strategy = "median" )
+1
+2
+The strategy  contains instructions as how to replace the missing values. In this case,
+we specify that the missing value should be replaced by the median value.
+imputer .fit ( wine_features )
+1
+In case, the features contains non-numeric attributes, they need to be dropped before
+calling the ﬁt  method on imputer object.
+SimpleImputer(add_indicator=False, copy=True, fill_value=None, missing_values=nan,  
+strategy='median', verbose=0)
+50
+Let's check the statistics learnt by the imputer on the training set:
+imputer .statistics_
+1
+array([ 7.9 , 0.52 , 0.26 , 2.2 , 0.08 , 14. , 39. , 0.99675, 3.31 ,  
+0.62 , 10.2 ])
+Note that these are median values for each feature. W e can cross-check it by calculating
+median on the feature set:
+wine_features .median ()
+1
+51
+Finally we use the trained imputer to transform the training set such that the missing
+values are replaced by the medians:
+tr_features  = imputer.transform(wine_features)
+1
+This returns a Numpy array and we can convert it to the dataframe if needed:
+tr_features .shape
+1
+(1279, 11)
+wine_features_tr = pd. DataFrame( tr_features , columns = wine_features . columns )
+1
+52
+4.3 Handling text and categorical attributes
+4.3.1 Converting categories to numbers:
+from  sklearn.preprocessing import  OrdinalEncoder
+ordinal_encoder = OrdinalEncoder()
+1
+2
+Call ﬁt_transform()  method on ordinal_encoder  object to convert text to numbers.
+The list of categories can be obtained via categories_ instance  variable.
+One issue with this representation is that the ML algorithm would assume that the
+two nearby values are closer than the distinct ones.
+53
+4.3.2 Using one hot encoding
+Here we create one binary feature per category - the feature value is 1 when the category
+is present else it is 0.
+Only one feature is 1 (hot) and the rest are 0 (cold).
+The new features are referred to as dummy features .
+Scikit-Learn provides a OneHotEncoder  class to convert categorical values into one-hot
+vectors.
+from  sklearn.preprocessing import  OneHotEncoder
+cat_encoder = OneHotEncoder()
+1
+2
+W e need to call ﬁt_transform()  method on OneHotEncoder  object.
+The output is a SciPy sparse matrix rather than NumPy array . This enables us to save
+space when we have a huge number of categories.
+In case we want to convert it to dense representation, we can do so with toarray()
+method.
+The list of categories can be obtained via categories_ instance variable.
+54
+As we observed that when the number of categories are very large, the one-hot encoding
+would result in a very large number of features.
+This can be addressed with one of the following approaches:
+Replace with categorical numerical features
+Convert into low-dimensional learnable vectors called embeddings
+55
+4.4 Feature Scaling
+Most ML algorithms do not perform well when input features are on very dif ferent
+scales.
+Scaling of target label is generally not required.
+4.5.1 Min-max scaling or Normalization
+W e subtract minimum value of a feature from the current value and divide it by the
+dif ference between the minimum and the maximum value of that feature.
+V alues are shifted and scaled so that they range between 0 and 1.
+Scikit-Learn provides MinMaxScalar transformer for this.
+One can specify hyperparameter  feature_range  to specify the range of the feature.
+56
+4.5.2 Standardization
+W e subtract mean value of each feature from the current value and divide it by the
+standard deviation so that the resulting feature has a unit variance.
+While normalization   bounds values between 0 and 1, standardization  does not bound
+values to a speciﬁc range.
+Standardization is less af fected by the outliers compared to the normalization.
+Scikit-Learn provides StandardScalar transformation for feature standardization.
+Note that all these transformers are learnt on the training data  and then applied on the
+training and test data to tranform them.
+Never learn these transformers on the full dataset .
+57
+Transformation Pipeline
+Scikit-Learn provides a Pipeline class to line up transformations in an intended order .
+Here is an example pipeline:
+from  sklearn.pipeline import  Pipeline
+from  sklearn.preprocessing import  StandardScaler
+transform_pipeline = Pipeline([
+                               ( 'imputer' , SimpleImputer(strategy= "median" )),
+                               ( 'std_scaler' , StandardScaler()),])
+wine_features_tr = transform_pipeline.fit_transform(wine_features)
+1
+2
+3
+4
+5
+6
+Let's understand what is happening here:
+Pipeline  has a sequence of transformations - missing value imputation followed by
+standardization.
+Each step in the sequence is deﬁned by name, estimator  pair .
+Each name should be unique and should not contain __ (double underscore).
+58
+from  sklearn.pipeline import  Pipeline
+from  sklearn.preprocessing import  StandardScaler
+transform_pipeline = Pipeline([
+                               ( 'imputer' , SimpleImputer(strategy= "median" )),
+                               ( 'std_scaler' , StandardScaler()),])
+wine_features_tr = transform_pipeline.fit_transform(wine_features)
+1
+2
+3
+4
+5
+6
+The output of one step is passed on the next one in sequence until it reaches the last
+step.
+Here the pipeline ﬁrst performs imputation of missing values and its result is passed for
+standardization.
+The pipeline exposes the same method as the ﬁnal estimator .
+Here StandardScalar is the last estimator and since it is a transformer , we call
+ﬁt_transform()  method on the Pipeline object.
+59
+How to transform mixed features?
+The real world data has both categorical as well as numerical features and we need to
+apply dif ferent transformations to them.
+Scikit-Learn introduced ColumnT ransformer  for this purpose.
+from  sklearn.compose import  ColumnTransformer
+1
+In our dataset, we do not have features of mixed types. All our features are numeric.
+ 
+60
+num_attribs  = list(wine_features)
+cat_attribs  = [ "place_of_manufacturing" ]
+full_pipeline  = ColumnTransformer([
+ ( "num" , num_pipeline, num_attribs),
+ ( "cat" , On eHotEncoder(), cat_attribs),
+ ])
+wine_features_tr  = full_pipeline.fit_transform(wine_features)
+1
+2
+3
+4
+5
+6
+7
+For the illustration purpose, here is an example code snippet:
+Here we apply num_pipeline  on numerical features and OneHotEncoder  transformation on
+the categorical features.
+The ColumnT ransformer  applies each transformation to the appropriate columns and then
+concatenates the outputs along the columns.
+Note that all transformers must return the same number of rows.
+The numeric transformers return dense matrix while the categorical ones return sparse
+matrix. The ColumnT ransformer  automatically determines the type of the output based on
+the density of the resulting matrix.
+61
+Step 5: Select and train ML model
+It's a good practice to build a quick baseline model on the preprocessed data and get
+an idea about model performance.
+from  sklearn.linear_model import  LinearRegression
+ 
+lin_reg = LinearRegression()
+lin_reg.fit(wine_features_tr, wine_labels)
+1
+2
+3
+4
+LinearRegression(copy_X=True, fit_intercept=True, n_jobs=None,  
+normalize=False)
+62
+Now that we have a working model of a regression, let's evaluate performance of the
+model on training as well as test sets.
+For regression models, we use mean squared error as an evaluation measure.
+from sklearn .metrics  import mean_squared_error
+ 
+quality_predictions =  lin_reg.predict(wine_features_tr)
+mean_squared_error (wine_labels, quality_predictions)
+1
+2
+3
+4
+0.4206571060060278
+63
+Let's evaluate performance on the test set.
+W e need to ﬁrst apply transformation on the test set and then apply the model prediction
+function.
+# copy all features leaving aside the label.
+wine_features_test  = strat_test_set.drop( "quality" , axis=1)
+ 
+# copy the label list
+wine_labels_test  = strat_test_set['quality'].copy()
+ 
+# apply transformations
+wine_features_test_tr  = transform_pipeline.fit_transform(wine_features_test)
+ 
+# call predict function and calculate MSE.
+quality_test_predictions  = lin_reg.predict(wine_features_test_tr)
+mean_squared_error(wine_labels_test, quality_test_predictions)
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+0.39759130875015164
+64
+Let's visualize the error between the actual and predicted values.
+plt .scatter (wine_labels_test, quality_test_predictions)
+plt .plot (wine_labels_test, wine_labels_test, 'r-' )
+plt .xlabel ( 'Actual quality' )
+plt .ylabel ( 'Predicted quality' )
+1
+2
+3
+4
+The model seem to be making errors
+on the best and poor quality wines.
+65
+Let's try another model: DecisionTreeRegressor.
+from sklearn. tree  import  DecisionTreeRegressor
+tree_reg = DecisionTreeRegressor()
+tree_reg.fit(wine_features_tr, wine_labels)
+1
+2
+3
+DecisionTreeRegressor(ccp_alpha=0.0, criterion='mse', max_depth=None, max_features=None,  
+max_leaf_nodes=None, min_impurity_decrease=0.0, min_impurity_split=None,  
+min_samples_leaf=1, min_samples_split=2, min_weight_fraction_leaf=0.0,  
+presort='deprecated', random_state=None, splitter='best')
+Notice similarity between two code snippets.
+Linear regression Decision T rees
+lin_reg. ﬁt(wine_features_tr ,
+wine_labels)
+tree_reg. ﬁt(wine_features_tr ,
+wine_labels)
+66
+quality_predictions =  tree_reg.predict(wine_features_tr)
+mean _squared_error( wine_labels , quality_predictions )
+1
+2
+0.0
+quality_test_predictions = tree_reg.predict(wine_features_test_tr)
+mean _squared_error( wine_labels_test , quality_test_predictions )
+1
+2
+0.58125
+Note that the training error is 0, while the test error is 0.58. This is an example of an
+overﬁtted model.
+67
+plt .scatter (wine_labels_test, quality_test_predictions)
+plt .plot (wine_labels_test, wine_labels_test, 'r-' )
+plt .xlabel ( 'Actual quality' )
+plt .ylabel ( 'Predicted quality' )
+1
+2
+3
+4
+68
+We can use cross-validation (CV) for robust evaluation of model performance.
+from  sklearn.model_selection import  cross_val_score
+1
+Cross validation provides a separate MSE for each validation set, which we can
+use to get a mean estimation of MSE as well as the standard deviation, which
+helps us to determine how precise is the estimate.
+The additional cost we pay in cross validation is additional training runs, which
+may be too expensive in certain cases.
+def  display_scores ( scores ):
+  print( "Scores:" , scores)
+  print( "Mean:" , scores.mean())
+  print( "Standard deviation:" , scores.std())
+1
+2
+3
+4
+69
+Linear Regression CV
+scores = cross_val_score( lin_reg , wine_features_tr, wine_labels,
+                         scoring= "neg_mean_squared_error" , cv=10)
+lin_reg_mse_scores = -scores
+display_scores( lin_reg_mse_scores )
+1
+2
+3
+4
+Scores: [0.56364537 0.4429824 0.38302744 0.40166681 0.29687635 0.37322622  
+0.33184855 0.50182048 0.51661311 0.50468542]  
+Mean: 0.431639217212196  
+Standard deviation: 0.08356359730413976
+70
+Decision tree CV
+scores = cross_val_score( tree_reg , wine_features_tr, wine_labels,
+                         scoring= "neg_mean_squared_error" , cv=10)
+tree_mse_scores = -scores
+display_scores( tree_mse_scores )
+1
+2
+3
+4
+Scores: [0.6171875 0.6875 0.6328125 0.5078125 0.4609375 0.640625 0.65625 0.7109375  
+0.859375 1.07874016]  
+Mean: 0.6852177657480315  
+Standard deviation: 0.16668343331737054
+Let's compare scores of Linear regression (LinReg) and decision tree
+(DT)regressions:
+LinReg has better MSE and more precise estimation compared to DT .
+71
+Random forest CV
+Random forest model builds multiple decision trees on randomly selected features
+and then average their predictions.
+Building a model on top of other model is called ensemble learning , which is often
+used to improve performance of ML models.
+from sklearn.ensemble import  RandomForestRegressor
+ 
+forest_reg  = RandomForestRegressor()
+forest_reg.fit(wine_features_tr, wine_labels)
+ 
+scores  = cross_val_score(forest_reg, wine_features_tr, wine_labels,
+                         scoring="neg_mean_squared_error",  cv=10)
+forest_mse_scores  = -scores
+display_scores(forest_mse_scores)
+1
+2
+3
+4
+5
+6
+7
+8
+9
+Scores: [0.36989922 0.41363672 0.29063438 0.31722344 0.21798125 0.30233828 0.27124922  
+0.38747344 0.42379219 0.46229449]  
+Mean: 0.34565226131889765  
+Standard deviation: 0.0736322184302973
+72
+quality_test_predictions = forest_reg.predict(wine_features_test_tr)
+mean _squared_error( wine_labels_test , quality_test_predictions )
+1
+2
+0.34449875
+plt .scatter (wine_labels_test, quality_test_predictions)
+plt .plot (wine_labels_test, wine_labels_test, 'r-' )
+plt .xlabel ( 'Actual quality' )
+plt .ylabel ( 'Predicted quality' )
+1
+2
+3
+4
+Random forest looks more promising than the other
+two models.
+It's a good practice to build a few such models
+quickly without tuning their hyperparameters and
+shortlist a few promising models among them.
+Also save the models to the disk in Python  pickle
+format.
+73
+What to do next?
+Model diagnosis
+ 
+Remedy
+Underﬁtting  Models with more capacity
+Less
+constraints/regularization
+Overﬁtting More data
+Simpler model
+More
+constraints/regularization
+74
+Step 6: Finetune your model
+Usually there are a number of hyperparameters in the model, which are set
+manually .
+T uning these hyperparameters lead to better accuracy of ML models.
+Finding the best combination of hyperparameters is a search problem in the
+space of hyperparameters, which is huge.
+Grid search
+Scikit-Learn provives a class GridSearchCV that helps us in this pursuit.
+from  sklearn.model_selection import  GridSearchCV
+1
+W e need to specify a list of hyperparameters along with the range of values to try .
+It automatically evaluates all possible combinations of hyperparameter values using
+cross-validation.
+75
+For example, there are number of hyperparameters in RandomForest regression
+such as:
+Number of estimators
+Maximum number of features
+param_grid = [
+ { 'n_estimators' : [ 3 , 10 , 30 ], 'max_features' : [ 2 , 4 , 6 , 8 ]},
+ { 'bootstrap' : [False], 'n_estimators' : [ 3 , 10 ], 'max_features' : [ 2 , 3 , 4 ]},
+]
+1
+2
+3
+4
+Here the parameter grid contains two combinations:
+1 . The ﬁrst combination contains  n_estimators  with 3 values and max_features  with
+4 values.
+2 . The second combination has an additional bootstrap  parameter , which is set to
+False. Note that it was set to its default value, which is T rue , in the ﬁrst grid.
+76
+Let's compute the total combinations evaluated here:
+Let's create an object of GridSearchCV :
+grid_search = GridSearchCV(forest_reg, param_grid, cv =5, 
+                           scoring = 'neg_mean_squared_error' ,
+                           return_train_score = True )
+1
+2
+3
+1 . The ﬁrst one results in  combinations.3 × 4 = 1 2
+2 . The second one has 2 values of n_estimators  and 3 values of max_features , thus
+resulting  in total of values.2 × 3 = 6
+The total number of combinations evaluated by the parameter grid 1 2 + 6 = 1 8
+77
+Let's create an object of GridSearchCV:
+grid_search = GridSearchCV(forest_reg, param_grid, cv=5, 
+                           scoring='neg_mean_squared_error',
+                           return_train_score=True)
+1
+2
+3
+In this case, we set cv=5  i.e. using 5 fold cross validation for training the model.
+W e need to train the model for 18 parameter combinations and each combination
+would be trained 5 times as we are using cross-validation here.
+The total model training runs = 1 8 × 5 = 9 0
+78
+Let's launch the hyperparameter search:
+grid_search .fit ( wine_features_tr , wine_labels )
+1
+79
+The best parameter combination can be obtained as follows:
+ grid_search .best_params_
+1
+{'max_features': 6, 'n_estimators': 30}
+Let's ﬁnd out the error at dif ferent parameter settings:
+cvres = grid_search.cv_results_  
+for mean_score, params  in  zip(cvres[ "mean_test_score" ], cvres[ "params" ]):  
+  print(-mean_score, params )
+80
+cvres = grid_search.cv_results_ 
+for mean_score, params in zip(cvres["mean_test_score"], cvres["params"]): 
+  print(-mean_score, params)
+As you can notice the lowest MSE is obtained for the best parameter combination.
+ 
+81
+Let's obtain the best estimator as follows:
+grid_search .best_estimator_
+1
+Note : GridSearchCV  is initialized with  reﬁt=T rue  option, which retrains the best
+estimator on the full training set. This is likely to lead us to a better model as it is
+trained on a larger dataset.
+82
+Randomized Search
+When we have a large hyperparameter space, it is desirable to try
+RandomizedSearchCV .
+It selects a random value for each hyperparameter at the start of each iteration and
+repeats the process for the given number of random combinations.
+It enables us to search hyperparameter space with appropriate budget control.
+from  sklearn.model_selection import  RandomizedSearchCV
+1
+83
+Analysis of best model and its errors
+Analysis of the model provides useful insights about features. let's obtain the feature
+importance as learnt by the model:
+ feature_importances = grid_search.best_estimator_.feature_importances_
+1
+sorted( zip ( feature_importances , feature_list), reverse=True)
+1
+Based on this information, we may drop features that are not so important.
+It is also useful to analyze the errors in prediction and understand its causes and ﬁx
+them.
+84
+Evaluation on test set
+Now that we have a reasonable model, we evaluate its performance on the test set. The
+following steps are involved in the process:
+# copy all features leaving aside the label.
+wine_features_test = strat_test_set.drop("quality", axis=1)
+ 
+# copy the label list
+wine_labels_test = strat_test_set['quality'].copy()
+ 
+# apply transformations
+wine_features_test_tr = transform_pipeline.fit_transform(wine_features_test)
+1
+2
+3
+4
+5
+6
+7
+8
+1. Transform the test features.
+85
+2. Use the predict method with the trained model and the test set.
+quality_test_predictions = grid_search.best_estimator_.predict(
+    wine_features_test_tr)
+1
+2
+3.Compare the predicted labels with the actual ones and report the evaluation metrics.
+mean_squared_error(wine_labels_test, quality_test_predictions)
+1
+0.35345138888888883
+86
+from scipy import stats
+confidence = 0.95
+squared_errors = (quality_test_predictions - wine_labels_test) ** 2
+stats.t.interval(confidence, len(squared_errors) - 1,
+                 loc=squared_errors.mean(),
+                 scale=stats.sem(squared_errors))
+1
+2
+3
+4
+5
+6
+(0.29159276569581916, 0.4153100120819586)
+4.It's a good idea to get 95% conﬁdence interval of the evaluation metric. It can be
+obtained by the following code:
+87
+Step 7: Present your solution
+Once we have satisfactory model based on its performance on the test set, we reach
+the prelaunch phase.
+Before launch,
+1 . W e need to present our solution that highlights learnings, assumptions and
+systems limitation.
+2 . Document everything, create clear visualizations and present the model.
+3 . In case, the model does not work better than the experts, it may still be a
+good idea to launch it and free up bandwidths of human experts.
+88
+Step 8: Launch, monitor and maintain your system
+Launch
+Plug in input sources and
+W rite test cases
+Monitoring
+System outages
+Degradation of model performance
+Sampling predictions for human evaluation
+Regular assessment of data quality , which is critical for model performance
+Maintenance
+T rain model regularly every ﬁxed interval with fresh data.
+Production roll out of the model.
+89
+Summary
+In this module, we studied steps involved in end to end machine learning project with
+an example of prediction of wine quality.
+90
